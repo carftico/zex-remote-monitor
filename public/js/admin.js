@@ -30,6 +30,9 @@ function token() {
 }
 $('#newBtn').onclick = async () => {
   const t = token(), mins = +$('#dur').value;
+  if (!Number.isInteger(mins) || mins < 10 || mins > ZEX_MAX_INVITE_DAYS * 24 * 60) {
+    return alert(`Choose an invitation duration from 10 minutes to ${ZEX_MAX_INVITE_DAYS} days.`);
+  }
   const { error } = await sb.from('sessions').insert({
     token: t, created_by: (await sb.auth.getUser()).data.user.id, label: $('#label').value.trim().slice(0, 40),
     expires_at: new Date(Date.now() + mins * 60000).toISOString()
@@ -51,12 +54,15 @@ function render() {
   const now = Date.now(); let tot = 0, act = 0, off = 0;
   const html = sessions.map(s => {
     const st = eff(s, now);
+    const sharingEnds = s.share_expires_at || (st === 'live' && s.started_at
+      ? new Date(new Date(s.started_at).getTime() + ZEX_MAX_ACTIVE_SHARE_MINUTES * 60000).toISOString()
+      : null);
     if (s.consent_at) { tot++; st === 'live' ? act++ : off++; }
     const btns = (st === 'live' ? `<button class="sm" data-v="${esc(s.token)}">View</button>` : '') +
       (['live', 'waiting', 'offline'].includes(st) ? `<button class="ghost sm" data-k="${esc(s.token)}">${st === 'waiting' ? 'Revoke' : 'Disconnect'}</button>` : '');
     return `<div class="s"><div><b>${esc(s.participant_name || s.label || 'Unclaimed invitation')}</b>
       <small>Started ${fmt(s.started_at)} · Ended ${fmt(s.ended_at)}${s.ended_by ? ' (' + esc(s.ended_by) + ')' : ''}</small>
-      <small>Expires ${fmt(s.expires_at)}</small></div>
+      <small>Invite expires ${fmt(s.expires_at)}</small>${sharingEnds ? `<small>Active sharing ends ${fmt(sharingEnds)}</small>` : ''}</div>
       <div class="row" style="flex:0"><span class="pill ${st}">${st === 'live' ? '<i></i>' : ''}${st}</span>${btns}</div></div>`;
   }).join('');
   $('#list').innerHTML = html || '<p>No sessions yet.</p>';

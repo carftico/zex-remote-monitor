@@ -13,14 +13,14 @@
  <li>Video only. Your microphone is never used.</li>
  <li>Nothing is recorded or stored.</li>
  <li>Before sharing, this page says “Camera ready · not shared.” After you join, “Camera sharing on” stays visible. You can stop at any time.</li>
- <li>Sharing ends if you stop, the administrator ends it, or this invitation expires.</li></ul>
+ <li>Active camera sharing automatically ends after 60 minutes, or sooner if you stop, the administrator ends it, or the invite expires.</li></ul>
  <input id="name" maxlength="40" placeholder="Your name" style="margin:8px 0">
  <label class="chk"><input id="ok" type="checkbox"><span>I agree to camera access and understand that the authorized administrator can view my live video after I press “Join &amp; Start Sharing.” I can stop sharing at any time.</span></label>
  <button id="allow" style="width:100%;margin-top:12px" disabled>Allow camera</button><div id="err" class="err"></div></section>
 <section id="cam" class="card step" hidden>
  <div class="camera-status" role="status" aria-live="polite"><div id="badge" class="camera-state" hidden></div><p id="cameraState">Camera status will appear here.</p></div>
  <p id="hint" style="text-align:center">Your camera is not shared with the administrator yet.</p>
- <div class="net">Connection: <b id="net">-</b> · Expires in <b id="left">-</b></div>
+ <div class="net">Connection: <b id="net">-</b> · <span id="deadlineLabel">Invite expires in</span> <b id="left">-</b></div>
  <div class="row" style="margin-top:10px"><button id="start">Join &amp; Start Sharing</button>
  <button id="stop" class="ghost" hidden>Stop Sharing</button><button id="recon" hidden>Reconnect</button></div></section>
 <section id="done" class="card step" hidden><h1>Camera off</h1><p id="doneMsg"></p></section></div>

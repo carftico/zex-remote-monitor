@@ -13,8 +13,9 @@ Zex Interactive / Paras Sharma. Consent-based remote camera streaming for educat
 ## Security
 - Admin must exist in `admins` table. Sessions table is readable and writable only by admins (RLS).
 - Participants have no table access. They use 4 token-checked functions: join_check, join_start, join_heartbeat, join_end.
-- Token is 192-bit random, expires (10/30/60 min), single use, ended sessions cannot be reopened.
-- The participant creates a stream only after consent and Start Sharing, and only when the admin asks for it.
+- Token is 192-bit random, single use, and can be configured to expire after 10/30/60 minutes, 1 day, 7 days, or 30 days; ended sessions cannot be reopened.
+- Active camera sharing is capped server-side at 60 minutes, even when an unused invitation remains valid longer. Participants see the active status and can stop sharing at any time.
+- The participant creates a stream only after consent and Join & Start Sharing, and only when the admin asks for it.
 - Permissions-Policy header blocks microphone.
 
 ## Deploy

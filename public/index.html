@@ -17,7 +17,8 @@
  <div class="grid">
   <section class="card"><h2>New invitation</h2>
    <div class="row"><input id="label" maxlength="40" placeholder="Label (optional)">
-   <select id="dur"><option value="10">Expires in 10 min</option><option value="30">30 min</option><option value="60" selected>60 min</option></select></div>
+   <select id="dur" aria-label="Invitation validity"><option value="10">Valid for 10 minutes</option><option value="30">Valid for 30 minutes</option><option value="60">Valid for 60 minutes</option><option value="1440">Valid for 1 day</option><option value="10080">Valid for 7 days</option><option value="43200" selected>Valid for 30 days</option></select></div>
+   <p class="mut">The invitation is single-use. Active camera sharing automatically ends after 60 minutes.</p>
    <button id="newBtn" style="width:100%;margin-top:10px">Generate QR code</button>
    <div id="qrBox" hidden><div id="qr"></div><div id="link"></div><button id="copy" class="ghost sm">Copy link</button></div></section>
   <section class="card" id="panel" hidden><h2>Live view <span id="pinfo" class="mut"></span></h2>

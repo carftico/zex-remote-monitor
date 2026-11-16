@@ -4,9 +4,17 @@ const $ = s => document.querySelector(s);
 const id = new URLSearchParams(location.search).get('s');
 const show = n => document.querySelectorAll('.step').forEach(e => e.hidden = e.id !== n);
 const VIDEO = { facingMode: 'user', width: { ideal: 640, max: 854 }, height: { ideal: 480, max: 480 }, frameRate: { ideal: 15, max: 20 } };
-let stream = null, pc = null, ch = null, gen = null, hb = null, tick = null, expAt = 0, name = '', live = false, started = false, ended = false, queue = [];
+let stream = null, pc = null, ch = null, gen = null, hb = null, tick = null, expAt = 0, shareExpAt = 0, name = '', live = false, started = false, ended = false, queue = [];
 
 const bad = m => { $('#badMsg').textContent = m; show('bad'); };
+function remaining(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const days = Math.floor(total / 86400), hours = Math.floor((total % 86400) / 3600);
+  if (days) return `${days}d ${hours}h`;
+  const minutes = Math.floor(total / 60), seconds = total % 60;
+  if (minutes >= 60) return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+}
 (async function init() {
   if (!id || id.length < 32) return bad('This link is not valid.');
   const { data } = await sb.rpc('join_check', { t: id });
@@ -32,9 +40,9 @@ $('#allow').onclick = async () => {
     p.onchange = () => p.state !== 'granted' && stopAll('Camera permission was revoked.', 'participant');
   }).catch(() => {});
   tick = setInterval(() => {
-    const ms = expAt - Date.now();
-    if (ms <= 0) return stopAll('The session expired.', 'expired');
-    $('#left').textContent = Math.floor(ms / 60000) + ':' + String(Math.floor(ms / 1000) % 60).padStart(2, '0');
+    const ms = (started ? shareExpAt : expAt) - Date.now();
+    if (ms <= 0) return stopAll(started ? 'The 60-minute sharing limit was reached.' : 'The invitation expired.', 'expired');
+    $('#left').textContent = remaining(ms);
   }, 1000);
   show('cam');
 };
@@ -42,7 +50,8 @@ $('#start').onclick = async () => {
   $('#start').disabled = true;
   const { data: ok } = await sb.rpc('join_start', { t: id, n: name, ua: navigator.userAgent });
   if (!ok) return stopAll('This link is no longer valid.', 'participant');
-  started = true;
+  started = true; shareExpAt = Math.min(expAt, Date.now() + ZEX_MAX_ACTIVE_SHARE_MINUTES * 60000);
+  $('#deadlineLabel').textContent = 'Sharing ends in';
   ch = sb.channel('zex-' + id);
   ch.on('broadcast', { event: 'hello' }, () => live && makeOffer())
     .on('broadcast', { event: 'answer' }, async ({ payload }) => {
