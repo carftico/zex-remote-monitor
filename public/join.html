@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0a0a0b">
+<title>ZEX Remote Monitor</title><link rel="stylesheet" href="css/style.css"></head><body>
+<div class="wrap"><div class="brand" style="text-align:center;padding-top:8px">ZEX<span>INTERACTIVE</span></div>
+<section id="load" class="card step"><p>Checking your link...</p></section>
+<section id="bad" class="card step" hidden><h1>Link unavailable</h1><p id="badMsg"></p></section>
+<section id="intro" class="card step" hidden>
+ <h1>Camera sharing request</h1>
+ <p>This educational tool lets an authorized administrator watch your camera live.</p>
+ <ul><li>Nothing starts until you press <b>Start Sharing</b>.</li>
+ <li>Video only. Your microphone is never used.</li>
+ <li>Nothing is recorded or stored.</li>
+ <li>A red LIVE badge stays visible while sharing, and you can stop at any time.</li></ul>
+ <input id="name" maxlength="40" placeholder="Your name" style="margin:8px 0">
+ <label class="chk"><input id="ok" type="checkbox"><span>I understand and agree that the administrator will see my live camera.</span></label>
+ <button id="allow" style="width:100%;margin-top:12px" disabled>Allow camera &amp; preview</button><div id="err" class="err"></div></section>
+<section id="cam" class="card step" hidden>
+ <div class="stage"><div id="badge" class="live" hidden><i></i>LIVE</div><video id="v" autoplay playsinline muted></video></div>
+ <p id="hint" style="text-align:center">Preview only. The administrator cannot see this yet.</p>
+ <div class="net">Connection: <b id="net">-</b> · Expires in <b id="left">-</b></div>
+ <div class="row" style="margin-top:10px"><button id="start">Start Sharing</button>
+ <button id="stop" class="ghost" hidden>Stop Sharing</button><button id="recon" hidden>Reconnect</button></div></section>
+<section id="done" class="card step" hidden><h1>Camera off</h1><p id="doneMsg"></p></section></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script><script src="js/join.js"></script></body></html>
