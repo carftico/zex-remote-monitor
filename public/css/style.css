@@ -32,6 +32,12 @@ button.sm{padding:6px 12px;min-height:34px;font-size:.85rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
 .stage{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:4/3}
 .stage video{width:100%;height:100%;object-fit:contain;background:#000}
+.camera-status{position:relative;min-height:210px;display:grid;place-items:center;text-align:center;padding:48px 18px 18px;background:#08090b;border:1px solid var(--line);border-radius:12px}
+.camera-status p{max-width:420px;color:var(--tx);font-weight:600}
+.camera-state{position:absolute;top:10px;left:10px;padding:5px 10px;border-radius:99px;font-size:.72rem;font-weight:800;letter-spacing:.08em}
+.camera-state.ready{background:#70520a;color:#fff1c2;border:1px solid #a17a17}
+.camera-state.live{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;border:1px solid var(--red)}
+.camera-state.live:before{content:"";display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:#fff;animation:p 1.2s infinite}
 .live{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-weight:800;letter-spacing:.12em;
  font-size:.75rem;padding:5px 10px;border-radius:99px;display:flex;align-items:center;gap:7px;z-index:2}
 .live i,.pill i{width:8px;height:8px;border-radius:50%;background:#fff;animation:p 1.2s infinite}

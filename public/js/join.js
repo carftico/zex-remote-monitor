@@ -18,7 +18,11 @@ const bad = m => { $('#badMsg').textContent = m; show('bad'); };
 $('#ok').onchange = () => $('#allow').disabled = !$('#ok').checked;
 async function openCamera() {
   stream = await navigator.mediaDevices.getUserMedia({ video: VIDEO, audio: false });
-  $('#v').srcObject = stream;
+  $('#badge').hidden = false;
+  $('#badge').className = 'camera-state ready';
+  $('#badge').textContent = 'CAMERA READY · NOT SHARED';
+  $('#cameraState').textContent = 'Camera access is active. Your local preview is hidden; the administrator cannot see your camera until you join.';
+  $('#hint').textContent = 'Your camera is not shared with the administrator yet.';
   stream.getVideoTracks()[0].onended = () => stopAll('Camera access ended or was revoked.', 'participant');
 }
 $('#allow').onclick = async () => {
@@ -53,8 +57,12 @@ $('#start').onclick = async () => {
     .on('broadcast', { event: 'end' }, () => stopAll('The administrator ended the session.', 'admin'))
     .subscribe(st => {
       if (st !== 'SUBSCRIBED' || live) return;
-      live = true; $('#badge').hidden = false; $('#start').hidden = true; $('#stop').hidden = false;
-      $('#hint').textContent = 'Your camera is LIVE and visible to the administrator.';
+      live = true;
+      $('#badge').className = 'camera-state live';
+      $('#badge').textContent = 'CAMERA SHARING ON';
+      $('#cameraState').textContent = 'Sharing is active. The authorized administrator can view your live camera. Your local preview is hidden; tap Stop Sharing to turn it off.';
+      $('#start').hidden = true; $('#stop').hidden = false;
+      $('#hint').textContent = 'The camera is being shared with the authorized administrator. Stop sharing at any time.';
       hb = setInterval(async () => { const { data } = await sb.rpc('join_heartbeat', { t: id }); if (data === 'ended') stopAll('The session has ended.', 'admin'); }, 10000);
     });
 };
@@ -69,6 +77,8 @@ $('#recon').onclick = async () => {
 // Offer is created only after consent, and only when the admin asks for the stream.
 async function makeOffer() {
   if (ended || !stream) return;
+  $('#badge').hidden = false; $('#badge').className = 'camera-state live'; $('#badge').textContent = 'CAMERA SHARING ON';
+  $('#cameraState').textContent = 'Your camera is being sent to the authorized administrator. Your local preview is hidden; tap Stop Sharing to end the session.';
   pc && pc.close(); queue = []; gen = crypto.randomUUID();
   const mine = pc = new RTCPeerConnection({ iceServers: ZEX_ICE });
   stream.getTracks().forEach(t => mine.addTrack(t, stream));
@@ -89,7 +99,7 @@ async function makeOffer() {
 async function stopAll(msg, by) {
   if (ended) return; ended = true; live = false;
   clearInterval(hb); clearInterval(tick);
-  stream && stream.getTracks().forEach(t => t.stop()); pc && pc.close(); $('#v').srcObject = null;
+  stream && stream.getTracks().forEach(t => t.stop()); pc && pc.close();
   if (by !== 'admin') {
     await sb.rpc('join_end', { t: id, by });
     if (ch) await ch.send({ type: 'broadcast', event: 'end', payload: {} }).catch(() => {});
